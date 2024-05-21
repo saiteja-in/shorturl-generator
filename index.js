@@ -4,6 +4,7 @@ const urlRoute=require('./routes/url')
 const {connectToMongoose}=require('./connection')
 const URL = require("./models/url");
 const app=express();
+const staticRoute=require('./routes/staticRouter')
 const port=8001
 connectToMongoose('mongodb+srv://vurukondasaiteja13:gD5JeCtr40751mQj@cluster1.o7wwi02.mongodb.net/short-url')
 .then(()=>{
@@ -14,16 +15,14 @@ connectToMongoose('mongodb+srv://vurukondasaiteja13:gD5JeCtr40751mQj@cluster1.o7
 app.set('view engine',"ejs")
 app.set('views',path.resolve("./views"))
 
-app.get("/test",async(req,res)=>{
-  const allUrls=await URL.find({})
-  return res.render("home",{
-    urls:allUrls
-  })
-})
+app.use('/',staticRoute)
 
-app.use(express.json())
+
+app.use(express.json())   //to support json data
+app.use(express.urlencoded({extended:false}))   //to support form data
+
 app.use('/url',urlRoute)
-app.get("/:shortId", async (req, res) => {
+app.get("/url/:shortId", async (req, res) => {
     const shortId = req.params.shortId;
     const entry = await URL.findOneAndUpdate(
       {
@@ -32,7 +31,7 @@ app.get("/:shortId", async (req, res) => {
       {
         $push: {
           visitHistory: {
-            timestamp: Date.now(),
+            timeStamp: Date.now(),
           },
         },
       }

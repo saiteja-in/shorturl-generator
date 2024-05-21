@@ -6,9 +6,17 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>hey pussy</h1>
-    <% urls.forEach(url => { %>
-     <li><%= url.shortId %></li>
-    <% }) %>
+    <h1>URL shortener</h1>
+    <% if (locals.id) { %>
+     <p>URL Generated: http://localhost:8001/url/<%= id %></p>
+    <% } %>
+    <div>
+        <form method="POST" action="/url">
+            <label>enter your original URL</label>
+            <input type="text" name="url" placeholder="enter url"/>
+            <button type=""submit>Generate</button>
+        </form>
+    </div>
+    
 </body>
 </html>
